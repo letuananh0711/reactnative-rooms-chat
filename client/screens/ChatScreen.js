@@ -23,11 +23,18 @@ export default function ChatScreen(props) {
     const [currentMessage, setCurrentMessage] = useState('');
 
     useEffect(() => {
-        // connect to the server socket room
-        socket.current = socketIOClient('http://192.168.0.169:3000/room');
+        // connect to the server socket with the extraHeaders which contain the room name
+        socket.current = socketIOClient('http://192.168.0.169:3000/', {
+            extraHeaders: {
+                'room': userChat.roomChat,
+            }
+        });
 
         // send signal to join room to server
-        socket.current.emit('joinRoom', userChat.roomChat);
+        //socket.current.emit('joinRoom', userChat.roomChat);
+
+        // disconnect socket when component is unmounted
+        return () => socket.current.disconnect();
     }, []);
 
 
@@ -43,7 +50,7 @@ export default function ChatScreen(props) {
         });
 
         // unsubscribe the effect for socket 
-        return () => socket.current.off();
+        return () => socket.current.off('serverMessage');
 
     }, [listMessage]);
 
