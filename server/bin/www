@@ -88,3 +88,10 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
+
+/******************************** 
+ * Gestion du socket from fichier socket.js
+ * https://stackoverflow.com/questions/60517979/how-to-move-socket-io-io-onconnection-code-another-js-file
+*/
+app.io = require('socket.io')(server);
+require('../socket')(app);
